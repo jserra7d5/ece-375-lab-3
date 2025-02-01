@@ -54,7 +54,6 @@ INIT:							; The initialization routine
 
 		; Initialize LCD Display
 		rcall LCDInit
-		rcall CLEAR
 
 
 		; NOTE that there is no RET or RJMP from INIT,
@@ -146,20 +145,7 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 ;		beginning of your functions
 ;-----------------------------------------------------------
 DISPLAY:
-		rcall LCDClr
-		ldi ZL, low(STRING_ONE * 2)
-		ldi ZH, high(STRING_ONE * 2)
-
-		ldi YL, low(0x0100)
-		ldi YH, high(0x0100)
-		rcall COPY_LOOP
-
-		ldi ZL, low(STRING_TWO * 2)
-		ldi ZH, high(STRING_TWO * 2)
-
-		ldi YL, low(0x0110)
-		ldi YH, high(0x0110)
-		rcall COPY_LOOP
+		rcall CLEAR
 		rcall LCDWrite
 		ret
 
@@ -192,12 +178,12 @@ END_COPY:							; Begin a function with a label
 ;		beginning of your functions
 ;-----------------------------------------------------------
 CLEAR:
-		rcall LCDClr
-		ldi ZL, low(STRING_ONE * 2)
-		ldi ZH, high(STRING_ONE * 2)
+		rcall LCDClr ; clear our LCD to get rid of any stray characters
+		ldi ZL, low(STRING_ONE * 2) ; load the first 8 bits of our string_one ptr into ZL (r30)
+		ldi ZH, high(STRING_ONE * 2) ; load the last 8 bits of our string_one ptr into ZH (r31)
 
-		ldi YL, low(0x0100)
-		ldi YH, high(0x0100)
+		ldi YL, low(0x0100) ; load the first 8 bits of our SRAM upper 16 character ptr into YL (r28)
+		ldi YH, high(0x0100) ; load the last 8 bits of our SRAM upper 16 character ptr into YL (r29)
 		rcall COPY_LOOP
 
 		ldi ZL, low(STRING_TWO * 2)
@@ -233,7 +219,7 @@ SHIFT_LOOP:
     ldi YH, high(0x0100)
     st Y, mpr                      ; store saved last character
 
-    ; step 5: wait to create smooth scrolling effect
+    ; step 5: wait to create scrolling effect
     rcall LCDWrite
     ldi waitcnt, WTime
     rcall wait
@@ -252,7 +238,7 @@ SHIFT_LOOP:
 ; after the .DB directive; these can help to access the data
 ;-----------------------------------------------------------
 STRING_ONE:
-.DB	"Hello World", 0 ; Declaring data in ProgMem
+.DB	"Joseph Serra ", 0 ; Declaring data in ProgMem
 STRING_TWO:
 .DB "I wanna Die", 0
 
