@@ -1,14 +1,14 @@
 
-AVRASM ver. 2.2.7  C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\main.asm Fri Jan 31 17:14:06 2025
+AVRASM ver. 2.2.7  C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\main.asm Fri Jan 31 17:45:07 2025
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32u4def.inc'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\main.asm(9): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\main.asm(248): Including file 'C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\main.asm(9): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\main.asm(251): Including file 'C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32u4def.inc'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\main.asm(9): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\main.asm(248): Including file 'C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm'
-C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\main.asm(9): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\main.asm(251): Including file 'C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm'
+C:\Users\dmbuz\Documents\Atmel Studio\7.0\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m32U4def.inc'
                                  
                                  ;***********************************************************
                                  
@@ -1588,7 +1588,7 @@ C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): 
 000077 9508                      		ret				; Return from subroutine
                                  
                                  ;-----------------------------------------------------------
-                                 ; Func: Template function header
+                                 ; Func: DISPLAY
                                  ; Desc: Cut and paste this and fill in the info at the
                                  ;		beginning of your functions
                                  ;-----------------------------------------------------------
@@ -1599,29 +1599,28 @@ C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): 
                                  
                                  
                                  ;-----------------------------------------------------------
-                                 ; Func: Template function header
+                                 ; Func: COPY_LOOP
                                  ; Desc: Cut and paste this and fill in the info at the
                                  ;		beginning of your functions
                                  ;-----------------------------------------------------------
                                  COPY_LOOP:
-00007b 95c8                      		lpm
-00007c 2000                      		tst r0
-00007d f019                      		breq END_COPY
+00007b 95c8                      		lpm ; loads the byte pointed to in Z register into r0
+00007c 2000                      		tst r0 ; sets the flag if the byte in r0 is equal to 0 or negative
+00007d f019                      		breq END_COPY ; checks the flag, if set, then end copy
                                  
-00007e 9209                      		st Y+, r0
-00007f 9631                      		adiw ZL, 1
-000080 cffa                      		RJMP COPY_LOOP
+00007e 9209                      		st Y+, r0 ; stores r0 in y, then increment y
+00007f 9631                      		adiw ZL, 1 ; increments ZL pointer
+000080 cffa                      		RJMP COPY_LOOP ; repeat until 0
                                  
                                  ;-----------------------------------------------------------
-                                 ; Func: Template function header
-                                 ; Desc: Cut and paste this and fill in the info at the
-                                 ;		beginning of your functions
+                                 ; Func: END_COPY
+                                 ; Desc: return function
                                  ;-----------------------------------------------------------
                                  END_COPY:							; Begin a function with a label
 000081 9508                      		ret						; End a function with RET
                                  
                                  ;-----------------------------------------------------------
-                                 ; Func: Template function header
+                                 ; Func: CLEAR
                                  ; Desc: Cut and paste this and fill in the info at the
                                  ;		beginning of your functions
                                  ;-----------------------------------------------------------
@@ -1632,17 +1631,21 @@ C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): 
                                  
 000085 e0c0                      		ldi YL, low(0x0100) ; load the first 8 bits of our SRAM upper 16 character ptr into YL (r28)
 000086 e0d1                      		ldi YH, high(0x0100) ; load the last 8 bits of our SRAM upper 16 character ptr into YL (r29)
-000087 dff3                      		rcall COPY_LOOP
+000087 dff3                      		rcall COPY_LOOP ; call copy subroutine
                                  
-000088 e4ec                      		ldi ZL, low(STRING_TWO * 2)
-000089 e0f1                      		ldi ZH, high(STRING_TWO * 2)
+000088 e4ec                      		ldi ZL, low(STRING_TWO * 2) ; load the first 8 bits of our string_two ptr into ZL (r30)
+000089 e0f1                      		ldi ZH, high(STRING_TWO * 2) ; load the last 8 bits of our string_two ptr into ZH (r31)
                                  
-00008a e1c0                      		ldi YL, low(0x0110)
-00008b e0d1                      		ldi YH, high(0x0110)
-00008c dfee                      		rcall COPY_LOOP
+00008a e1c0                      		ldi YL, low(0x0110) ; load the first 8 bits of our SRAM lower 16 character ptr into YL (r28)
+00008b e0d1                      		ldi YH, high(0x0110) ; load the last 8 bits of our SRAM lower 16 character ptr into YL (r29)
+00008c dfee                      		rcall COPY_LOOP ; call copy subroutine
 00008d 9508                      		ret
                                  
                                  
+                                 ;-----------------------------------------------------------
+                                 ; Func: SCROLL and SHIFT_LOOP
+                                 ; Desc: a function to imi
+                                 ;-----------------------------------------------------------
                                  SCROLL:                          ; begin function with a label
                                      ; step 1: store last character of line 2 (0x011F)
 00008e e1ef                          ldi ZL, low(0x011F)           
@@ -1656,22 +1659,22 @@ C:\Users\redst\Documents\ECE 375\ece-375-lab-3\ECE_375_Lab_3\LCDDriver.asm(31): 
                                      ; step 3: shift all characters right by 1 (going backwards)
 000093 e280                          ldi mpr2, 32                  ; loop counter (32 shifts)
                                  
-                                 SHIFT_LOOP:
-000094 9182                          ld mpr2, -Z                   ; pre-decrement Z, then load
-000095 938a                          st -Y, mpr2                   ; pre-decrement Y, then store
-000096 958a                          dec mpr2                      ; decrement counter
-000097 f7e1                          brne SHIFT_LOOP               ; repeat until all 32 characters are shifted
+                                 	SHIFT_LOOP:
+000094 9182                      		ld mpr2, -Z                   ; pre-decrement Z, then load
+000095 938a                      		st -Y, mpr2                   ; pre-decrement Y, then store
+000096 958a                      		dec mpr2                      ; decrement counter
+000097 f7e1                      		brne SHIFT_LOOP               ; repeat until all 32 characters are shifted
                                  
-                                     ; step 4: restore the saved last character to the first position (0x0100)
-000098 e0c0                          ldi YL, low(0x0100)            ; set Y pointer to first char
-000099 e0d1                          ldi YH, high(0x0100)
-00009a 8308                          st Y, mpr                      ; store saved last character
+                                 		; step 4: restore the saved last character to the first position (0x0100)
+000098 e0c0                      		ldi YL, low(0x0100)            ; set Y pointer to first char
+000099 e0d1                      		ldi YH, high(0x0100)
+00009a 8308                      		st Y, mpr                      ; store saved last character
                                  
-                                     ; step 5: wait to create scrolling effect
-00009b d036                          rcall LCDWrite
-00009c e119                          ldi waitcnt, WTime
-00009d dfcb                          rcall wait
-00009e 9508                          ret
+                                 		; step 5: wait to create scrolling effect
+00009b d036                      		rcall LCDWrite
+00009c e119                      		ldi waitcnt, WTime
+00009d dfcb                      		rcall wait
+00009e 9508                      		ret
                                  
                                  
                                  

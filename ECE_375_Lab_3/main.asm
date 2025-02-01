@@ -54,7 +54,7 @@ INIT:							; The initialization routine
 
 		; Initialize LCD Display
 		rcall LCDInit
-
+		rcall CLEAR ; clears garbage values
 
 		; NOTE that there is no RET or RJMP from INIT,
 		; this is because the next instruction executed is the
@@ -140,7 +140,7 @@ ILoop:	dec		ilcnt			; decrement ilcnt
 		ret				; Return from subroutine
 
 ;-----------------------------------------------------------
-; Func: Template function header
+; Func: DISPLAY
 ; Desc: Cut and paste this and fill in the info at the
 ;		beginning of your functions
 ;-----------------------------------------------------------
@@ -151,29 +151,28 @@ DISPLAY:
 
 
 ;-----------------------------------------------------------
-; Func: Template function header
+; Func: COPY_LOOP
 ; Desc: Cut and paste this and fill in the info at the
 ;		beginning of your functions
 ;-----------------------------------------------------------
 COPY_LOOP:
-		lpm
-		tst r0
-		breq END_COPY
+		lpm ; loads the byte pointed to in Z register into r0
+		tst r0 ; sets the flag if the byte in r0 is equal to 0 or negative
+		breq END_COPY ; checks the flag, if set, then end copy
 
-		st Y+, r0
-		adiw ZL, 1
-		RJMP COPY_LOOP
+		st Y+, r0 ; stores r0 in y, then increment y
+		adiw ZL, 1 ; increments ZL pointer
+		RJMP COPY_LOOP ; repeat until 0
 
 ;-----------------------------------------------------------
-; Func: Template function header
-; Desc: Cut and paste this and fill in the info at the
-;		beginning of your functions
+; Func: END_COPY
+; Desc: return function
 ;-----------------------------------------------------------
 END_COPY:							; Begin a function with a label
 		ret						; End a function with RET
 
 ;-----------------------------------------------------------
-; Func: Template function header
+; Func: CLEAR
 ; Desc: Cut and paste this and fill in the info at the
 ;		beginning of your functions
 ;-----------------------------------------------------------
@@ -184,17 +183,21 @@ CLEAR:
 
 		ldi YL, low(0x0100) ; load the first 8 bits of our SRAM upper 16 character ptr into YL (r28)
 		ldi YH, high(0x0100) ; load the last 8 bits of our SRAM upper 16 character ptr into YL (r29)
-		rcall COPY_LOOP
+		rcall COPY_LOOP ; call copy subroutine
 
-		ldi ZL, low(STRING_TWO * 2)
-		ldi ZH, high(STRING_TWO * 2)
+		ldi ZL, low(STRING_TWO * 2) ; load the first 8 bits of our string_two ptr into ZL (r30)
+		ldi ZH, high(STRING_TWO * 2) ; load the last 8 bits of our string_two ptr into ZH (r31)
 
-		ldi YL, low(0x0110)
-		ldi YH, high(0x0110)
-		rcall COPY_LOOP
+		ldi YL, low(0x0110) ; load the first 8 bits of our SRAM lower 16 character ptr into YL (r28)
+		ldi YH, high(0x0110) ; load the last 8 bits of our SRAM lower 16 character ptr into YL (r29)
+		rcall COPY_LOOP ; call copy subroutine
 		ret
 
 
+;-----------------------------------------------------------
+; Func: SCROLL and SHIFT_LOOP
+; Desc: a function to shift the string on the LCD
+;-----------------------------------------------------------
 SCROLL:                          ; begin function with a label
     ; step 1: store last character of line 2 (0x011F)
     ldi ZL, low(0x011F)           
@@ -206,24 +209,23 @@ SCROLL:                          ; begin function with a label
     ldi YH, high(0x0120)
 
     ; step 3: shift all characters right by 1 (going backwards)
-    ldi mpr2, 32                  ; loop counter (32 shifts)
 
-SHIFT_LOOP:
-    ld mpr2, -Z                   ; pre-decrement Z, then load
-    st -Y, mpr2                   ; pre-decrement Y, then store
-    dec mpr2                      ; decrement counter
-    brne SHIFT_LOOP               ; repeat until all 32 characters are shifted
+	SHIFT_LOOP:
+		ld mpr2, -Z                   ; pre-decrement Z, then load
+		st -Y, mpr2                   ; pre-decrement Y, then store
+		dec mpr2                      ; decrement counter
+		brne SHIFT_LOOP               ; repeat until all 32 characters are shifted
 
-    ; step 4: restore the saved last character to the first position (0x0100)
-    ldi YL, low(0x0100)            ; set Y pointer to first char
-    ldi YH, high(0x0100)
-    st Y, mpr                      ; store saved last character
+		; step 4: restore the saved last character to the first position (0x0100)
+		ldi YL, low(0x0100)            ; set Y pointer to first char
+		ldi YH, high(0x0100)
+		st Y, mpr                      ; store saved last character
 
-    ; step 5: wait to create scrolling effect
-    rcall LCDWrite
-    ldi waitcnt, WTime
-    rcall wait
-    ret
+		; step 5: wait to create scrolling effect
+		rcall LCDWrite
+		ldi waitcnt, WTime
+		rcall wait
+		ret
 
 
 
